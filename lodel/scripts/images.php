@@ -120,6 +120,7 @@ function resize_image($taille, $src, &$dest)
 			$width = $result2[1] ? $result2[1] : $result[0];
 			$height = $result2[2] ? $result2[2] : $result[1];
 		}
+        if ($height==0) $height = 1;
 		if ($gdv >= 2) { //Sur la GD2 la version a changé
 			$im2 = @ImageCreateTrueColor($width, $height);
 			if (!$im2) {
