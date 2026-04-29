@@ -54,3 +54,8 @@ Marche à suivre:
   - Il faudra donner temporairement les droits d'écriture sur le dossier d'une instance de site.
   - Vérifer qu'à l'intérieur du dossier d'un site l'utilisateur du serveur HTTP a bien les droits d'écriture sur les dossiers:
       upload, docannexe, docannexe/file, docannexe/image, lodel/sources, lodel/icons
+
+[![Project Status: Inactive – The project has reached a stable, usable state but is no longer being actively developed; support/maintenance will be provided as time allows.](https://www.repostatus.org/badges/latest/inactive.svg)](https://www.repostatus.org/#inactive)
+
+
+
