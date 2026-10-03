@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libicu-dev \
     libzip-dev \
     libonig-dev \
-    libedit-dev \
     libxml2-dev \
     libcurl4-openssl-dev \
     libmemcached-dev \
@@ -24,7 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
 RUN docker-php-ext-install -j"$(nproc)" \
-    curl gd intl mbstring mysqli opcache readline xml zip
+    curl gd intl mbstring mysqli opcache xml zip
 
 RUN pecl install memcache-8.2
 
