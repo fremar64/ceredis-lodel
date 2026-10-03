@@ -27,12 +27,6 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.ceredis-lodel.rule=Host(`publications.ceredis.net`)
-      - traefik.http.routers.ceredis-lodel.entrypoints=https
-      - traefik.http.routers.ceredis-lodel.tls=true
-      - traefik.http.services.ceredis-lodel.loadbalancer.server.port=80
 
   db:
     image: mariadb:11.4
