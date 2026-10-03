@@ -1,7 +1,7 @@
 FROM php:8.2-apache-bookworm
 ARG LODEL_VERSION=1.1.0
 ENV APACHE_DOCUMENT_ROOT=/var/www/html LODEL_VERSION=${LODEL_VERSION}
-RUN apt-get update && apt-get install -y --no-install-recommends libfreetype6-dev libjpeg62-turbo-dev libpng-dev libicu-dev libzip-dev libxml2-dev libcurl4-openssl-dev libmemcached-dev zlib1g-dev libssl-dev libsasl2-dev curl unzip git ca-certificates rsync \
+RUN apt-get update && apt-get install -y --no-install-recommends libfreetype6-dev libjpeg62-turbo-dev libpng-dev libicu-dev libzip-dev libonig-dev libxml2-dev libcurl4-openssl-dev libmemcached-dev zlib1g-dev libssl-dev libsasl2-dev curl unzip git ca-certificates rsync \
  && docker-php-ext-configure gd --with-freetype --with-jpeg \
  && docker-php-ext-install -j"$(nproc)" curl gd intl mbstring mysqli opcache readline xml zip \
  && pecl install memcache-8.2 \
