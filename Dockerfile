@@ -4,8 +4,11 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/html LODEL_VERSION=${LODEL_VERSION}
 RUN apt-get update && apt-get install -y --no-install-recommends libfreetype6-dev libjpeg62-turbo-dev libpng-dev libicu-dev libzip-dev libxml2-dev libcurl4-openssl-dev libmemcached-dev zlib1g-dev libssl-dev libsasl2-dev curl unzip git ca-certificates rsync \
  && docker-php-ext-configure gd --with-freetype --with-jpeg \
  && docker-php-ext-install -j"$(nproc)" curl gd intl mbstring mysqli opcache readline xml zip \
- && pecl install memcache-8.2 memcached-3.3.0 \
- && docker-php-ext-enable memcache memcached \
+ && pecl install memcache-8.2 \
+ && pecl install igbinary \
+ && pecl install msgpack \
+ && pecl install memcached-3.3.0 \
+ && docker-php-ext-enable memcache igbinary msgpack memcached \
  && a2enmod rewrite headers access_compat expires \
  && rm -rf /var/lib/apt/lists/* /tmp/pear
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
