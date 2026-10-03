@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libicu-dev \
     libzip-dev \
     libonig-dev \
+    libedit-dev \
     libxml2-dev \
     libcurl4-openssl-dev \
     libmemcached-dev \
