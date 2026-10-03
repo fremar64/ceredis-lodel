@@ -45,7 +45,7 @@ services:
     volumes:
       - lodel-db:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -u root -p$MARIADB_ROOT_PASSWORD --silent"]
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 --silent"]
       interval: 10s
       timeout: 5s
       retries: 10
