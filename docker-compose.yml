@@ -1,0 +1,62 @@
+services:
+  lodel:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        LODEL_VERSION: "1.1.0"
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      LODEL_VERSION: "1.1.0"
+      LODEL_DB_HOST: "db"
+      LODEL_DB_NAME: "${LODEL_DB_NAME:-lodel}"
+      LODEL_DB_USER: "${LODEL_DB_USER:-lodel}"
+      LODEL_DB_PASSWORD: "${LODEL_DB_PASSWORD:?Set LODEL_DB_PASSWORD in Coolify}"
+      LODEL_TIMEZONE: "${LODEL_TIMEZONE:-Africa/Brazzaville}"
+      LODEL_LOCALE: "${LODEL_LOCALE:-fr_FR.UTF-8}"
+    volumes:
+      - lodel-data:/var/www/html
+    expose:
+      - "80"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.ceredis-lodel.rule=Host(`publications.ceredis.net`)
+      - traefik.http.routers.ceredis-lodel.entrypoints=https
+      - traefik.http.routers.ceredis-lodel.tls=true
+      - traefik.http.services.ceredis-lodel.loadbalancer.server.port=80
+
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --max_allowed_packet=64M
+      - --key_buffer_size=32M
+      - --max_connections=100
+    environment:
+      MARIADB_DATABASE: "${LODEL_DB_NAME:-lodel}"
+      MARIADB_USER: "${LODEL_DB_USER:-lodel}"
+      MARIADB_PASSWORD: "${LODEL_DB_PASSWORD:?Set LODEL_DB_PASSWORD in Coolify}"
+      MARIADB_ROOT_PASSWORD: "${LODEL_DB_ROOT_PASSWORD:?Set LODEL_DB_ROOT_PASSWORD in Coolify}"
+    volumes:
+      - lodel-db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -u root -p\$\$MARIADB_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  lodel-data:
+  lodel-db:
