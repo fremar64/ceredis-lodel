@@ -14,7 +14,7 @@ services:
       LODEL_DB_HOST: "db"
       LODEL_DB_NAME: "${LODEL_DB_NAME:-lodel}"
       LODEL_DB_USER: "${LODEL_DB_USER:-lodel}"
-      LODEL_DB_PASSWORD: "${LODEL_DB_PASSWORD:?Set LODEL_DB_PASSWORD in Coolify}"
+      LODEL_DB_PASSWORD: "${LODEL_DB_PASSWORD:?}"
       LODEL_TIMEZONE: "${LODEL_TIMEZONE:-Africa/Brazzaville}"
       LODEL_LOCALE: "${LODEL_LOCALE:-fr_FR.UTF-8}"
     volumes:
@@ -40,8 +40,8 @@ services:
     environment:
       MARIADB_DATABASE: "${LODEL_DB_NAME:-lodel}"
       MARIADB_USER: "${LODEL_DB_USER:-lodel}"
-      MARIADB_PASSWORD: "${LODEL_DB_PASSWORD:?Set LODEL_DB_PASSWORD in Coolify}"
-      MARIADB_ROOT_PASSWORD: "${LODEL_DB_ROOT_PASSWORD:?Set LODEL_DB_ROOT_PASSWORD in Coolify}"
+      MARIADB_PASSWORD: "${LODEL_DB_PASSWORD:?}"
+      MARIADB_ROOT_PASSWORD: "${LODEL_DB_ROOT_PASSWORD:?}"
     volumes:
       - lodel-db:/var/lib/mysql
     healthcheck:
