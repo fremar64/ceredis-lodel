@@ -85,5 +85,57 @@ EOF
     touch "$APP_ROOT/$INSTALL_KEY"
 fi
 
+# Lodel's installer creates a site layout around the shared source tree.
+# The persistent Docker volume does not run that installer, so recreate the
+# essential, idempotent links needed by the public/admin entry points.
+ensure_dir() {
+    dir="$1"
+    mkdir -p "$dir"
+}
+
+ensure_link() {
+    target="$1"
+    link="$2"
+
+    if [ -L "$link" ]; then
+        current="$(readlink "$link")"
+        if [ "$current" = "$target" ]; then
+            return 0
+        fi
+        rm -f "$link"
+    elif [ -e "$link" ]; then
+        return 0
+    fi
+
+    ln -s "$target" "$link"
+}
+
+ensure_dir "$APP_ROOT/upload"
+ensure_dir "$APP_ROOT/tpl"
+ensure_dir "$APP_ROOT/css"
+ensure_dir "$APP_ROOT/images"
+ensure_dir "$APP_ROOT/docannexe/file"
+ensure_dir "$APP_ROOT/docannexe/image"
+ensure_dir "$APP_ROOT/lodel/sources"
+ensure_dir "$APP_ROOT/lodel/icons"
+ensure_dir "$APP_ROOT/lodel/edition"
+ensure_dir "$APP_ROOT/lodel/admin"
+ensure_dir "$APP_ROOT/lodel/edition/tpl"
+ensure_dir "$APP_ROOT/lodel/admin/tpl"
+
+# lodeladmin/lodelconfig.php adds lodel/scripts to PHP's include_path.
+# The View layer nevertheless resolves the login template from the site root
+# (./tpl/login.html), as in the original Lodel installation.
+ensure_link "../lodel/src/lodel/admin/tpl/login.html" "$APP_ROOT/tpl/login.html"
+ensure_link "lodel/src/lodel/admin/login.php" "$APP_ROOT/login.php"
+ensure_link "lodel/src/lodel/admin/logout.php" "$APP_ROOT/logout.php"
+
+# Keep the traditional lodel/admin layout coherent as well.
+ensure_link "../../src/lodel/admin/tpl/login.html" "$APP_ROOT/lodel/admin/tpl/login.html"
+ensure_link "../../src/lodel/admin/login.php" "$APP_ROOT/lodel/admin/login.php"
+ensure_link "../../src/lodel/admin/logout.php" "$APP_ROOT/lodel/admin/logout.php"
+
+touch "$APP_ROOT/docannexe/index.html" "$APP_ROOT/docannexe/image/index.html"
+
 chown -R www-data:www-data "$APP_ROOT"
 exec "$@"
