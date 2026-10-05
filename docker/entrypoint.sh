@@ -100,7 +100,7 @@ fi
 # The document root is a Docker volume, so changing the image template alone would
 # not update a previously generated lodelconfig.php.
 if [ -f "$CONFIG_FILE" ]; then
-    sed -i "s/\\$cfg\\['singledatabase'\\] = 'off';/\\$cfg['singledatabase'] = 'on';/" "$CONFIG_FILE"
+    sed -i "s/\$cfg\['singledatabase'\] = 'off';/\$cfg['singledatabase'] = 'on';/" "$CONFIG_FILE"
 fi
 
 # Lodel's installer creates a site layout around the shared source tree.
