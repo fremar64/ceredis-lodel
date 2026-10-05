@@ -9,6 +9,17 @@ if [ ! -f "$APP_ROOT/index.php" ]; then
     cp -a "$SOURCE_ROOT"/. "$APP_ROOT"/
 fi
 
+# The Lodel document root is a persistent volume. New image builds therefore
+# do not automatically replace the application code already present in that
+# volume. Synchronize only the immutable application trees on every startup;
+# keep the runtime configuration and user/site data in the persistent root.
+echo "Synchronizing Lodel application code into persistent document root..."
+mkdir -p "$APP_ROOT/lodel/scripts" "$APP_ROOT/lodel/src" "$APP_ROOT/share" "$APP_ROOT/lodeladmin"
+rsync -a "$SOURCE_ROOT/lodel/scripts/" "$APP_ROOT/lodel/scripts/"
+rsync -a "$SOURCE_ROOT/lodel/src/" "$APP_ROOT/lodel/src/"
+rsync -a "$SOURCE_ROOT/share/" "$APP_ROOT/share/"
+rsync -a "$SOURCE_ROOT/lodeladmin/" "$APP_ROOT/lodeladmin/"
+
 if [ ! -f "$CONFIG_FILE" ]; then
     : "${LODEL_DB_NAME:?LODEL_DB_NAME is required}"
     : "${LODEL_DB_USER:?LODEL_DB_USER is required}"
