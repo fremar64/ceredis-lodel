@@ -18,6 +18,10 @@ if ($documentRoot === false) {
     throw new RuntimeException("Unable to resolve Lodel document root.");
 }
 
+if (!defined("LODELROOT")) {
+    define("LODELROOT", $documentRoot . "/");
+}
+
 require $documentRoot . "/lodelconfig.php";
 
 /*
