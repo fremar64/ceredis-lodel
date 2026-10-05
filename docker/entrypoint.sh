@@ -54,7 +54,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
 \$cfg['sharedir'] = "${APP_ROOT}/share";
 \$cfg['contactbug'] = 'support@ceredis.net';
 \$cfg['mysqldir'] = '/usr/bin';
-\$cfg['singledatabase'] = 'off';
+\$cfg['singledatabase'] = 'on';
 \$cfg['tableprefix'] = '';
 \$cfg['sessionname'] = 'session'.\$cfg['database'];
 \$cfg['detectlanguage'] = true;
