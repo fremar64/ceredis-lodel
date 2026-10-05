@@ -61,7 +61,8 @@ try
 	}
 
 	// creation de la DataBase si besoin
-	if (defined('DATABASE')) {
+	$database = C::get('database', 'cfg');
+	if (!$database && defined('DATABASE')) {
 		$database = DATABASE;
 	}
 	$website->set('database', $database);
