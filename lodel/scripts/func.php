@@ -1230,14 +1230,40 @@ function getMimeType($ext)
 function find_in_path($fichier)
 {
     static $chemins = array();
+
     if (empty($chemins)) {
-        $chemins[] = '';
-        if ($siteroot = C::get('siteroot')) $chemins[] = $siteroot;
-        $chemins[] = $sharedir = C::get('sharedir', 'cfg') . DIRECTORY_SEPARATOR;
-        foreach ((array)C::get('view.base_rep') as $rep) {
-            $chemins[] = $sharedir . 'plugins' . DIRECTORY_SEPARATOR . 'custom' . DIRECTORY_SEPARATOR . $rep . DIRECTORY_SEPARATOR;
+        /*
+         * Macro/template lookup must not depend on PHP's current working
+         * directory. In the Docker deployment the shared tree lives under
+         * the Lodel document root, while the application source is also
+         * available under /opt/lodel during image/runtime initialization.
+         */
+        $sharedir = C::get('sharedir', 'cfg');
+        if (is_string($sharedir) && $sharedir !== '') {
+            $chemins[] = rtrim($sharedir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         }
+
+        $documentRoot = realpath(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..');
+        if ($documentRoot !== false) {
+            $rootSharedir = $documentRoot . DIRECTORY_SEPARATOR . 'share' . DIRECTORY_SEPARATOR;
+            if (!in_array($rootSharedir, $chemins, true)) {
+                $chemins[] = $rootSharedir;
+            }
+        }
+
+        if ($siteroot = C::get('siteroot')) $chemins[] = $siteroot;
+
+        foreach ((array)C::get('view.base_rep') as $rep) {
+            $customBase = (is_string($sharedir) ? rtrim($sharedir, DIRECTORY_SEPARATOR) : '');
+            if ($customBase !== '') {
+                $chemins[] = $customBase . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'custom' . DIRECTORY_SEPARATOR . $rep . DIRECTORY_SEPARATOR;
+            }
+        }
+
+        // Keep the legacy relative lookup as the final fallback.
+        $chemins[] = '';
     }
+
     foreach ($chemins as $chemin) {
         if (file_exists($f = $chemin . $fichier))
             return $f;
