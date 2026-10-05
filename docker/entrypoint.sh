@@ -96,6 +96,13 @@ EOF
     touch "$APP_ROOT/$INSTALL_KEY"
 fi
 
+# Migrate an existing persistent runtime configuration to single-database mode.
+# The document root is a Docker volume, so changing the image template alone would
+# not update a previously generated lodelconfig.php.
+if [ -f "$CONFIG_FILE" ]; then
+    sed -i "s/\\$cfg\\['singledatabase'\\] = 'off';/\\$cfg['singledatabase'] = 'on';/" "$CONFIG_FILE"
+fi
+
 # Lodel's installer creates a site layout around the shared source tree.
 # The persistent Docker volume does not run that installer, so recreate the
 # essential, idempotent links needed by the public/admin entry points.
